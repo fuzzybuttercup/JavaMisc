@@ -5,6 +5,7 @@
     tools:context="${packageName}.${activityClass}" >
 
     <android.widget.SquareLayout
+        android:id="@+id/board"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -28,24 +29,33 @@
                 android:orientation="vertical" >
 
                 <ImageButton
-                    android:id="@+id/ImageButton07"
+                    android:id="@+id/Tile_00"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:tag=" "
+                    android:onClick="tileClicked"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/tile_o" />
 
                 <ImageButton
-                    android:id="@+id/ImageButton09"
+                    android:id="@+id/Tile_01"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:tag=" "
+                    android:onClick="tileClicked"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/tile_o" />
 
                 <ImageButton
-                    android:id="@+id/ImageButton08"
+                    android:id="@+id/Tile_02"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:tag=" "
+                    android:onClick="tileClicked"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/tile_o" />
             </LinearLayout>
 
@@ -57,25 +67,35 @@
                 android:orientation="vertical" >
 
                 <ImageButton
-                    android:id="@+id/ImageButton01"
+                    android:id="@+id/Tile_10"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:tag=" "
+                    android:onClick="tileClicked"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/tile_o" />
 
                 <ImageButton
-                    android:id="@+id/ImageButton06"
+                    android:id="@+id/Tile_11"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:tag=" "
+                    android:onClick="tileClicked"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/tile_o" />
 
                 <ImageButton
-                    android:id="@+id/ImageButton04"
+                    android:id="@+id/Tile_12"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:tag=" "
+                    android:onClick="tileClicked"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/tile_o" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -86,30 +106,56 @@
                 android:orientation="vertical" >
 
                 <ImageButton
-                    android:id="@+id/ImageButton05"
+                    android:id="@+id/Tile_20"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:tag=" "
+                    android:onClick="tileClicked"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/tile_o" />
 
                 <ImageButton
-                    android:id="@+id/ImageButton02"
+                    android:id="@+id/Tile_21"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:tag=" "
+                    android:onClick="tileClicked"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/tile_o" />
 
                 <ImageButton
-                    android:id="@+id/ImageButton03"
+                    android:id="@+id/Tile_22"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:tag=" "
+                    android:onClick="tileClicked"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/tile_o" />
-
             </LinearLayout>
 
         </LinearLayout>
 
     </android.widget.SquareLayout>
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_margin="25dp"
+        android:onClick="Connect"
+        android:text="Connect" />
+
+    <TextView
+        android:id="@+id/text_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/button1"
+        android:layout_below="@id/button1"
+        android:text="Medium Text"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </RelativeLayout>

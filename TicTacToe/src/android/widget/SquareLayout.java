@@ -8,7 +8,6 @@ public class SquareLayout extends RelativeLayout {
     public SquareLayout(Context context) {
         super(context);
     }
-
     public SquareLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
