@@ -1,9 +1,12 @@
 package com.example.tictactoe;
 
+import java.util.Arrays;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.widget.*;
@@ -14,8 +17,9 @@ public class MainActivity extends Activity {
 
 	ImageButton[][] Tiles = new ImageButton[3][3];
 	Vibrator vibrator;
-	State playerState = State.X;
+	State playerState = State.Empty;
 	SocketClientAsync socket;
+	Boolean playersTurn;
 	
 	enum State {
 		Empty,
@@ -55,9 +59,18 @@ public class MainActivity extends Activity {
     	try {
 			socket.Connect("192.168.0.110");
 		} catch (Exception e) {
-			
+			showMessage("Couldn't Connect");
 			e.printStackTrace();
 		}
+    	
+    	TimerTask tt = new TimerTask() {
+		    public void run() {
+		    	if(!playersTurn)
+		    		recieveMove();
+		    }
+		};
+		Timer timer = new Timer();
+		timer.scheduleAtFixedRate(tt, 1000, 250);
     }
     
     public void tileClicked(View v)
@@ -100,8 +113,10 @@ public class MainActivity extends Activity {
     	switch(getState(Tiles[x][y]))
     	{
 		case Empty:
-			sendMove(x, y);
-			break;
+			if(playersTurn) {
+				sendMove(x, y);
+				break;
+			}
 		case O:
 		case X:
 			cantMove(x, y);
@@ -110,7 +125,9 @@ public class MainActivity extends Activity {
 			break;
     	}
     }
-    
+    private State getState(int x, int y){
+    	return getState(Tiles[x][y]);
+    }
     private State getState(View v)
     {
     	String tag = v.getTag().toString().toUpperCase();
@@ -159,54 +176,92 @@ public class MainActivity extends Activity {
     	}
     	
     }
+    
     private void recieveMove()
     {
     	String[] command = new String[0];
     	try {
-			command = socket.ReadCommand();
+    		if(socket.CanRead())
+    			command = socket.ReadCommand();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	try{
-	    	if(command.length > 0)
-	    	{
-	    		
-	    		if(command[0] == "MOVE" && command.length >= 3)
+    	if(command.length > 0)
+    	{
+    		if(command[0] == "MOVE" && command.length >= 3)
+    		{
+    			playersTurn = true;
+    			int x, y;
+    			x = Integer.parseInt(command[1]);
+    			y = Integer.parseInt(command[1]);
+    			
+    			setState(Tiles[x][y], playerState == (State.O)? State.X : State.O);
+    			
+    		}
+    		else if(command[0] == "REQUESTBOARD")
+    			try{
+    				sendBoard();
+    			}
+	    		catch(Exception e)
 	    		{
-	    			int x, y;
-	    			x = Integer.parseInt(command[1]);
-	    			y = Integer.parseInt(command[1]);
-	    			
-	    			setState(Tiles[x][y], playerState == (State.O)? State.X : State.O);
+	    			showMessage("Error 209");
 	    		}
-	    		else if(command[0] == "REQUESTBOARD")
-	    			sendBoard();
-	    		
-	    		else if(command[0] == "RECEIVEBOARD")
-	    			recieveBoard();
-	    		else
-	    			showMessage("Recieved Unknown Command.");
-	    		
-	    	}
+    		
+    		else if(command[0] == "RECEIVEDBOARD")
+    			recieveBoard(Arrays.copyOfRange(command, 1, command.length));
+    		else
+    			showMessage("Recieved Unknown Command.");
+    		
     	}
-    	catch(Exception e){
-    		showMessage(e.getMessage());
-    		e.printStackTrace();
-    	}
-    }
-    private void recieveBoard()
-    {
     	
     }
-    private void sendBoard()
+    // [X/O/E]
+    private void recieveBoard(String[] args)
     {
+    	
+    	for(int i = 0; i < 9; i++)
+    	{
+    		State state;
+    		if(args[i] == "X")
+    			state = State.X;
+    		else if(args[i] == "O")
+    			state = State.X;
+    		else if(args[i] == "E")
+    			state = State.Empty;
+    		else
+    			state = State.Empty;
+    		int x = i % 3, y = i / 3;
+    		setState(Tiles[x][y], state);
+    	}
+    }
+    private void sendBoard() throws Exception
+    {
+    	String[] args = new String[9];
+    	
+    	for(int i = 0; i < 9; i++)
+    	{
+    		int x = i % 3, y = i / 3;
+    		
+    		String state = "";
+    		if(getState(x, y) == State.X)
+    			state = "X";
+    		else if(getState(x, y) == State.O)
+    			state = "O";
+    		else if(getState(x, y) == State.Empty)
+    			state = "E";
+    			
+    			
+    		args[i] = state;
+    	}
+    	
+    	socket.WriteCommand("RECEIVEDBOARD", args);
     	
     }
     private void showMessage(String text)
     {
     	Context context = getApplicationContext();	
-    	Toast toast = Toast.makeText(context, text, 1000);
+    	Toast toast = Toast.makeText(context, text, Toast.LENGTH_LONG);
     	toast.show();
     }
 }
